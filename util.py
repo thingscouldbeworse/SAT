@@ -1,4 +1,6 @@
 import random
+import glob
+import os
 
 # parse a dimacs file into a formula
 def read_dimacs(filename):
@@ -47,4 +49,11 @@ def check_formula(formula, var_dict):
 
     return formula, result, clauses_sat
 
+# open a directory of CNF files
+def open_dir(directory):
+    dimaces_list = []
+    for file in os.listdir(directory):
+       dimacs_list.append([read_dimacs(file)])
+
+    return dimacs_list
 

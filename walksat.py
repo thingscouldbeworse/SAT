@@ -2,6 +2,7 @@
 import sys
 import random
 import util
+import copy
 
 def walk_sat(formula, var_dict, seed, max_flips=10000):
     # randomly assign values
@@ -30,20 +31,17 @@ def walk_sat(formula, var_dict, seed, max_flips=10000):
         best_var_dict = []
         for literal in unsat[target_pick][0]:
             # choose literal within clause with highest score
-            var_dict_copy = var_dict
+            var_dict_copy = copy.copy(var_dict)
             var_dict_copy[abs(literal)] = not var_dict_copy[abs(literal)]
             new_formula, new_result, new_score = util.check_formula(formula, var_dict_copy)
             if new_score > best_score:
                 best_score = new_score
                 best_var_dict = var_dict_copy
-        var_dict = var_dict_copy
+        var_dict = best_var_dict
         formula, result, score = util.check_formula(formula, var_dict)
         if result:
-            return formula, result, score
+            return formula, result, score, i
 
     formula, result, score = util.check_formula(formula, var_dict)
-    print("Took (%s) flips", i)
-    return formula, result, score
+    return formula, result, score, i
 
-formula, var_dict = util.read_dimacs(sys.argv[1])
-print(walk_sat(formula, var_dict, sys.argv[2],10000 ))
