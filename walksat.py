@@ -23,7 +23,6 @@ def walk_sat(formula, var_dict, seed, max_flips=10000):
         for line in formula:
             if not line[1]:
                 unsat.append(line)
-        print("unsatisfied: " + str(len(unsat)))
 
         # choose a random unsolved clause
         target_pick = random.randint(0,len(unsat)-1)
