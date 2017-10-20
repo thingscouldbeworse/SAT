@@ -1,6 +1,7 @@
 import walksat
 import util
 import hillclimbing
+import dpll
 
 import sys
 import copy
@@ -34,7 +35,18 @@ def satisfy_dir(directory):
 
     return all_results
 
-#formula, var_dict = util.read_dimacs(sys.argv[1])
+formula, var_dict = util.read_dimacs(sys.argv[1])
 #print(walksat.walk_sat(formula, var_dict, sys.argv[2],10000 ))
 #print(hillclimbing.hill_climb(formula, var_dict))
-satisfy_dir(sys.argv[1])
+#satisfy_dir(sys.argv[1])
+for var in var_dict:
+    var_dict[var] = None
+for line in formula:
+    line[1] = None
+var_dict[1] = True
+var_dict[6] = True
+var_dict = dpll.propogate(formula, var_dict)
+print(var_dict)
+print()
+print(util.check_formula(formula, var_dict))
+
