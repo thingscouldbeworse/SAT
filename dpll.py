@@ -1,6 +1,7 @@
 import util
 import copy
 
+# unit clauses (only one literal unassigned we know that literal's value
 def propogate(formula, var_dict):
     
     for line in formula:
@@ -35,6 +36,7 @@ def propogate(formula, var_dict):
             var_dict = var_dict_copy
     return var_dict
 
+# a literal cannot be set if doing so would invalidate another clause
 def contradiction(formula, var_dict, literal_to_flip):
     for line in formula:
         clause_result = False
@@ -50,4 +52,21 @@ def contradiction(formula, var_dict, literal_to_flip):
         if our_literal:
             if clause_result == False:
                 return True
+
+# if a literal appears with only one polarity, it must have that value
+def pure_literal_elim(formula):
+    literals = {}
+    for line in formula:
+        clause = line[0]
+        for literal in clause:
+            if abs(literal) not in literals:
+                literals[abs(literal)] = literal / abs(literal)
+            else:
+                if literals[abs(literal)] == 'impure' or literal / abs(literal) != literals[abs(literal)]:
+                    literals[abs(literal)] = 'impure'
+    return literals
+
+# recursively apply DPLL
+def dpll(formula, var_dict):
+    nothing = ""
 
