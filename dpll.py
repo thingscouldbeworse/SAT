@@ -97,7 +97,7 @@ def dpll(formula, var_dict):
     for var in var_dict:
         if var_dict[var] == None:
             literal = var
-            print("Chose %s" % var)
+            #print("Chose %s" % var)
             unassigned = True
             break
     #print(var_dict)

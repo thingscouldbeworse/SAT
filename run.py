@@ -43,25 +43,15 @@ def satisfy_dir(directory, walk=True, hill=True, deepee=True):
                     line[1] = None
                 result, new_var_dict = dpll.dpll(formula, var_dict)
                 new_formula, result, score = util.check_formula(formula, new_var_dict)
-                result = [directory+"/"+file, "DPLL", result, str(score)+"/"+str(len(formula)), NA, time.time() - current]
+                if result == False:
+                    result = "Unsatisfied"
+                else:
+                    result = "Satisfied"
+                result = [directory+"/"+file, "DPLL", result, 'NA', 'NA', time.time() - current]
                 print(result)
                 all_results.append(result)
                 
             
     return all_results
 
-formula, var_dict = util.read_dimacs(sys.argv[1])
-print(formula)
-directory = "tests"
-file = sys.argv[1]
-current = time.time()
-for var in var_dict:
-    var_dict[var] = None
-for line in formula:
-    line[1] = None
-result, new_var_dict = dpll.dpll(formula, var_dict)
-new_formula, result, score = util.check_formula(formula, new_var_dict)
-#result = [directory+"/"+file, "DPLL", result, str(score)+"/"+str(len(formula)), "NA", time.time() - current]
-#print(result)
-print(dpll2.propogate([[[False, True, 3],True], [[False, False, 2],False]]))
-            
+satisfy_dir(sys.argv[1], True, True, True)
