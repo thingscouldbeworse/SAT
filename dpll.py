@@ -66,7 +66,48 @@ def pure_literal_elim(formula):
                     literals[abs(literal)] = 'impure'
     return literals
 
+# empty clauses are clauses with all variables set, but still False
+def empty(formula, var_dict):
+    for line in formula:
+        clause = line[0]
+        result = False
+        complete = True
+        for literal in clause:
+            if var_dict[abs(literal)] != None:
+                if literal < 0:
+                    result = result or not var_dict[abs(literal)]
+                else:
+                    result = result or var_dict[abs(literal)]
+            else:
+                complete = False
+        if complete and not result:
+            return True
+    return False
+        
+
 # recursively apply DPLL
 def dpll(formula, var_dict):
-    nothing = ""
-
+    new_formula, result, new_score = util.check_formula(formula, var_dict)
+    if result:
+        return result, var_dict
+    if empty(formula, var_dict):
+        return False, var_dict
+    var_dict = propogate(formula, var_dict)
+    unassigned = False
+    for var in var_dict:
+        if var_dict[var] == None:
+            literal = var
+            print("Chose %s" % var)
+            unassigned = True
+            break
+    #print(var_dict)
+    if not unassigned:
+        temp_formula, temp_result, temp_score = util.check_formula(formula, var_dict)
+        if temp_result:
+            return True, var_dict
+        else:
+            return False, var_dict
+    var_dict_true = copy.copy(var_dict)
+    var_dict_true[literal] = True
+    var_dict[var] = False
+    return dpll(formula, var_dict_true) or dpll(formula, var_dict)
